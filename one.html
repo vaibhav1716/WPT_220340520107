@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script>
+        //program run successfuly.
+        $(() => {
+
+            console.log("All tags are loaded");
+
+            $("#id").blur(() => {
+
+                console.log("blur event click");
+
+                const input = { bookid: $("#id").val() };
+
+                // console.log(input);
+
+                let ajaxparams = {
+                    data: input,
+                    url: "http://localhost:8085/searching",
+                    type: 'get',
+                    dataType: 'json',
+                    success: (data) => {
+
+                        if (data.status == true) {
+                            $("#name").prop("disabled", false);
+                            $("#price").prop("disabled", false);
+                            $("#btn").prop("disabled", false);
+                            $("#id").val(data.bookdetails.bookid);
+                            $("#name").val(data.bookdetails.bookname);
+                            $("#price").val(data.bookdetails.price);
+                            $("#msg").html("Book ID Found");
+                        }
+                        else {
+                            $("#name").prop("disabled", true);
+                            $("#price").prop("disabled", true);
+                            $("#btn").prop("disabled", true);
+                            $("#name").val("");
+                            $("#price").val("");
+                            $("#msg").html("Book ID Not Found");
+                        }
+
+                    },
+                    error: (errMsg) => {
+
+                        console.log("Eoor- Not coonected to server" + errMsg);
+                    }
+
+                };//ajax params end
+
+                $.ajax(ajaxparams);
+
+            })//id blur event end
+
+            //update event start
+
+            $("#btn").click(() => {
+
+                console.log("update event click");
+
+                const input = { bookid: $("#id").val(), bookname: $("#name").val(), price: $("#price").val() };
+
+                //console.log(input);
+
+                let ajaxparams = {
+                    data: input,
+                    url: "http://localhost:8085/update",
+                    type: 'get',
+                    dataType: 'json',
+                    success: (data) => {
+                        if (data.status == true) {
+                            $("#id").val("");
+                            $("#name").val("");
+                            $("#price").val("");
+                            $("#msg").html("Book Details Updated");
+                            $("#name").prop("disabled", true);
+                            $("#price").prop("disabled", true);
+                            $("#btn").prop("disabled", true);
+                        }
+                        else {
+                            $("#id").val("");
+                            $("#name").val("");
+                            $("#price").val("");
+                            $("#msg").html("Book Details Not Updated");
+                        }
+
+                    },
+                    error: (errMsg) => {
+
+                        console.log("Eoor- Not coonected to server" + errMsg);
+                    }
+                };
+                $.ajax(ajaxparams);
+
+            })//update evenet end
+
+
+
+        });//DOM event ending
+    </script>
+</head>
+
+<body>
+    Book ID : <input type="text" id="id">
+    <span id="msg">Message</span>
+    <Br />
+    <Br /> Book Name : <input type="text" id="name" disabled>
+    <Br />
+    <Br /> Price : <input type="text" id="price" disabled>
+    <hr />
+    <Br />
+    <input type="button" id="btn" value="Update Book" disabled />
+
+</body>
+
+</html>
